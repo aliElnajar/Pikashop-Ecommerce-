@@ -1,0 +1,178 @@
+﻿
+@model IEnumerable<PikaShop.Web.ViewModels.WishListViewModel>
+
+@{
+    ViewData["Title"] = "Wish List";
+}
+
+@{
+    decimal TotalwishListPrice = 0;
+}
+<div class="container mt-12  mb-5 pb-5">
+    <h1 class="text-center mb-4">Wish List</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered" style="width: 100%;">
+            <colgroup>
+                <col style="width: 10%;" />
+                <col style="width: 20%;" />
+                <col style="width: 20%;" /> 
+                <col style="width: 15%;" />
+                <col style="width: 10%;" /> 
+                <col style="width: 10%;" /> 
+                <col style="width: 15%;" /> 
+            </colgroup>
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Product Image</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price per unit</th>
+                    <th scope="col">Stock Status</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col">Buttons</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @{
+                            var totalProductPrice = item.Price * item.Quantity;
+                            TotalwishListPrice += totalProductPrice;
+                            var rowClass = TotalwishListPrice % 2 == 0 ? "even-row" : "odd-row";
+                        }
+                        <td><img src="@item.ProductImage" alt="@item.ProductName" class="img-thumbnail" style="max-height: 100px;" /></td>
+                        <td>@item.ProductName</td>
+                        <td style="font-size: 16px;">
+                            <button id="@item.ProductId-removingBtn" data-input="@item.ProductId" class="btn text-xxl fw-bold remove-btn" style="font-size:16px">-</button>
+                            <span id="@item.ProductId" class="btn btn-light rounded-pill mx-1" style="font-size:16px" min="1" type="number" max="@item.UnitsInStock">@item.Quantity</span>
+                            <button id="@item.ProductId-addingBtn" data-input="@item.ProductId" class="btn text-xxl fw-bold add-btn" style="font-size:16px">+</button>
+                        </td>
+                        <td style="font-size: 16px;">
+                            <span id="totalPriceperProduct-@item.ProductId" class="btn btn-light rounded-pill mx-2" style="font-size:16px" min="1" type="number" max="@item.UnitsInStock">@item.Price<span>$</span></span>
+                        </td>
+                        <td>
+                            @if (item.UnitsInStock > 0)
+                            {
+                                <span style="color:green">In stock</span>
+                            }
+                            else
+                            {
+                                <span style="color:red">Out of stock</span>
+                            }
+                        </td>
+                        <td style="font-size: 16px;">
+                            <span id="totalPrice-@item.ProductId" class="btn btn-light rounded-pill mx-2" style="font-size:16px" min="1" type="number" max="@item.UnitsInStock">@totalProductPrice<span>$</span></span>
+                        </td>
+                        <td>
+                            @if (item.UnitsInStock > 0)
+                            {
+                                <form asp-action="MoveToCart" method="post">
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                    <input type="hidden" name="customerId" value="@item.CustomerId" />
+                                    <input type="hidden" name="productQuantity" value="@item.Quantity" />
+                                    <button type="submit" class="btn btn-warning">Add to Cart</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="MoveToCart" method="post">
+                                    <input type="hidden" name="productId" value="@item.ProductId" />
+                                    <input type="hidden" name="customerId" value="@item.CustomerId" />
+                                    <input type="hidden" name="productQuantity" value="@item.Quantity" />
+                                    <button type="submit" class="btn btn-warning" disabled>Add to Cart</button>
+                                </form>
+                            }
+                            <form asp-action="Delete" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="hidden" name="customerId" value="@item.CustomerId" />
+                                <button type="submit" class="btn btn-danger">Delete Item</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td><a href="/Home" class="btn btn-warning mr-3">Continue   Shopping</a></td>
+                    <td><a href="/WishList/DeleteAll" class="btn btn-danger mr-3 ">Clear  Wish  List Items</a></td>
+                    <td></td>
+                    <td><a href="/WishList/MoveAlltoCart" class="btn btn-success mr-3">Move All to Cart</a></td>
+                    <td>Total Wish List Price</td>
+                    <td><span id="totalField" class="btn btn-light rounded-pill mx-2" style="font-size:16px" min="@TotalwishListPrice" type="number">@TotalwishListPrice<span>$</span></span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="text-center mt-4">
+    </div>
+</div>
+
+<style>
+    .odd-row {
+        background-color: #f8f9fa; /* Light grey color */
+    }
+
+    .even-row {
+        background-color: #ffffff; /* White color */
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // Remove button click event
+    $(document).on('click', '.remove-btn', function () {
+        const inputId = $(this).data('input');
+        const input = $('#' + inputId);
+        const currentValue = parseInt(input.text());
+        const input2 = $("#totalPriceperProduct-" + inputId);
+        const productPriceText = input2.text().trim();
+        const productPrice = parseFloat(productPriceText.split(' ')[0].replace(',', ''));
+        const input3 = $("#totalField");
+        const totalWishList = parseInt(input3.text());
+        const newValue = Math.max(currentValue - 1, 1);
+        input.text(newValue.toFixed(2));
+        let totalProductPrice = newValue * productPrice;
+        let totalWishListPrice = totalWishList - (productPrice * currentValue) + (productPrice * newValue);
+        $("#totalPrice-" + inputId).text(totalProductPrice.toFixed(2));
+        $("#totalField").text(totalWishListPrice.toFixed(2));
+    
+        DecreaseWishList(inputId);
+    });
+
+
+    // Add button click event
+    $(document).on('click', '.add-btn', function () {
+        const inputId = $(this).data('input');
+        const input = $('#' + inputId);
+        const currentValue = parseInt(input.text());
+        const maxUnits = parseInt(input.attr('max'));
+        const newValue = Math.min(currentValue + 1, maxUnits);
+        const input2 = $("#totalPriceperProduct-" + inputId);
+        const productPriceText = input2.text().trim();
+        const productPrice = parseFloat(productPriceText.split(' ')[0].replace(',', ''));
+        const input3 = $("#totalField");
+        const totalWishList = parseInt(input3.text());
+        let totalProductPrice = newValue * productPrice;
+        let totalWishListPrice = totalWishList - (productPrice * currentValue) + (productPrice * newValue);
+        $("#totalPrice-" + inputId).text(totalProductPrice.toFixed(2));
+        $("#totalField").text(totalWishListPrice.toFixed(2));
+        input.text(newValue.toFixed(2));
+        IncreaseWishList(inputId);
+    });
+
+    function DecreaseWishList(productId) {
+        $.ajax({
+            url: "/WishList/DecreaseProduct/" + productId,
+            method: "post",
+            data: { productId: productId }
+        });
+    }
+
+    function IncreaseWishList(productId) {
+        $.ajax({
+            url: "/WishList/IncrementProduct/" + productId,
+            method: "post",
+            data: { productId: productId }
+        });
+    }
+</script>

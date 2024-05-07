@@ -1,0 +1,59 @@
+﻿@{
+    ViewData["Title"] = "Cancel";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .cancel-container {
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        .cancel-heading {
+            color: #dc3545;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .cancel-message {
+            color: #6c757d;
+            font-size: 18px;
+        }
+
+        .try-again {
+            color: #007bff;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+            .try-again:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="cancel-container">
+            <h1 class="cancel-heading">Payment Cancelled</h1>
+            <p class="cancel-message">Your payment was cancelled. No charges were made.</p>
+            <p class="cancel-message">If you'd like to try again, please click <a href="/Checkout/Index" class="try-again">here</a>.</p>
+        </div>
+    </div>
+
+</body>
+</html>

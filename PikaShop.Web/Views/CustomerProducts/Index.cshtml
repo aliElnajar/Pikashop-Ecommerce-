@@ -1,0 +1,280 @@
+﻿@model PikaShop.Common.Pagination.PaginatedList<PikaShop.Web.ViewModels.ProductViewModel>;
+
+@{
+    var Departments = ViewBag.Departments;
+    var maximumCurrentPrice = ViewBag.MaxPrice;
+    Dictionary<string, List<string>> Specifications = ViewBag.Specification;
+}
+
+<style>
+   h1 {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        margin: 0;
+    }
+ 
+    .price-range-labels::before {
+        content: "$";
+        margin-right: 2px; /* Adjust as needed */
+    }
+
+    .productUnitPrice::before{
+        content:"$";
+        margin-left:1px;
+        font-style:italic;
+    }
+</style>
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 d-flex py-4">
+            <hr class="col-9" />
+            <div class="input-group col-3 ">
+                <input id="SearchInput" class="form-control me-2" type="search" name="searchKeyword" placeholder="Search here" aria-label="Search">
+                <button id="SearchBtn" class="btn btn-success px-2" type="submit" disabled>Search</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-3 px-4">
+            <section>
+                <section>
+
+                    <partial name="_partialSortingMenu" />
+                </section>
+
+                <!-- Departments -->
+                <section>
+                    <partial name="_partialDepartments" model="@Departments" />
+                </section>
+
+                <!-- Price range -->
+                <section class="p-3 border rounded">
+                    <partial name="_partialPriceRange" model="@maximumCurrentPrice" />
+                </section>
+
+                <!-- Category specifications -->
+                <section class="p-3 border rounded">
+                    @if (Specifications.Count > 0)
+                    {
+                        <partial name="_partialCategorySpecifications" model="@Specifications" />
+                    }
+                </section>
+            </section>
+        </div>
+
+        <!-- Right Section with Products -->
+        <div class="col-lg-9">
+            <div class="my-5">
+                <div class="row" id="ProductLst">
+                    <partial name="_partialProductItem" model="@Model" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ 
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#SearchBtn').prop('disabled', true);
+
+        $('#SearchInput').on('input', function () {
+            $('#SearchBtn').prop('disabled', $(this).val().trim() === '');
+
+        });
+
+        // // Remove button click event
+        // $(document).on('click', '.remove-btn', function () {
+        //     const inputId = $(this).data('input');
+        //     const input = $('#' + inputId);
+        //     const currentValue = parseInt(input.text());
+        //     const newValue = Math.max(currentValue - 1, 1);
+        //     input.text(newValue);
+        // });
+
+
+
+        $(document).on('click', '.toCardBtn', function () {
+            const inputId = $(this).data('input');
+            const input = $('#' + inputId);
+            const productQuantity = parseInt(input.text());
+
+            AddToCardHandler(inputId, productQuantity);
+
+            const newValue = 1;
+            input.text(newValue);
+        });
+
+
+        function AddToCardHandler(productId, productQuantity) {
+            $.ajax({
+                url: "CartItem/AddToCart",
+                method: "post", // Change the method to 'get'
+                data: { productId: productId, productQuantity: productQuantity } // Ensure proper formatting of data object
+            });
+        }
+
+        $(document).on('click', '.toWishListBtn', function () {
+            const inputId = $(this).data('input');
+            const input = $('#' + inputId);
+            const productQuantity = parseInt(input.text());
+            AddToWishListHandler(inputId, productQuantity);
+            const newValue = 1;
+            input.text(newValue);
+        });
+
+        function AddToWishListHandler(productId, productQuantity) {
+            $.ajax({
+                url: "WishList/AddToWishList", // Corrected URL
+                method: "post",
+                data: { productId: productId, productQuantity: productQuantity }
+            });
+        }
+    });
+
+    // // Add button click event
+    // $(document).on('click', '.add-btn', function () {
+    //     const inputId = $(this).data('input');
+    //     const input = $('#' + inputId);
+    //     const currentValue = parseInt(input.text());
+    //     const maxUnits = parseInt(input.attr('max'));
+    //     const newValue = Math.min(currentValue + 1, maxUnits);
+    //     input.text(newValue);
+    // });
+
+    // Range input change event
+    $('#priceRange').on('input', function () {
+        $('#rangeValue').text($(this).val());
+        ChangePriceRange($(this).val());
+
+    });
+
+    $("#SearchBtn").click(function () {
+        searchHandler($("#SearchInput").val());
+    });
+
+    function searchHandler(keyword) {
+        $.ajax({
+            url: "CustomerProducts/SearchProducts?searchKeyword=" + keyword,
+            method: "get",
+            success: function (response) {
+                $("#ProductLst").html(response);
+            },
+        });
+    }
+
+
+
+
+    var checkedValues = {};
+
+    $('.category-features').on('change', '.features input[type="checkbox"]', function () {
+
+        var key = $(this).attr('name');
+        var value = $(this).val();
+
+        if ($(this).is(':checked') && value.trim() !== '') {
+            if (!checkedValues.hasOwnProperty(key)) {
+                checkedValues[key] = [];
+            }
+            checkedValues[key].push(value);
+        } else {
+            if (checkedValues.hasOwnProperty(key)) {
+                var index = checkedValues[key].indexOf(value);
+                if (index !== -1) {
+                    checkedValues[key].splice(index, 1);
+                }
+                if (checkedValues[key].length === 0) {
+                    delete checkedValues[key];
+                }
+            }
+        }
+        makeAjaxCall(checkedValues);
+    });
+
+
+    $('#orderBy').change(function () {
+        var selectedValue = $(this).val();
+        ChangeSortCriteria(selectedValue);
+    });
+
+    function ChangeSortCriteria(orderBy) {
+        $.ajax({
+            url: "CustomerProducts/SortProductsBy?orderBy=" + orderBy,
+            method: "get",
+            success: function (response) {
+                $("#ProductLst").html(response);
+                attachClickHandlers();
+            },
+        })
+
+    }
+
+    function ChangePriceRange(priceRange) {
+        console.log("price fun called!")
+        $.ajax({
+            url: "CustomerProducts/FilterByPrice?maxPrice=" + priceRange,
+            method: "get",
+            success: function (response) {
+                $("#ProductLst").html(response);
+                attachClickHandlers();
+            },
+        })
+
+
+    }
+
+
+
+    function makeAjaxCall(checkedValues) {
+
+        const queryString = $.param({ specificationJson: JSON.stringify(checkedValues) });
+        $.ajax({
+            url: 'CustomerProducts/FilterByFeatures?' + queryString,
+            method: "get",
+            success: function (response) {
+                $("#ProductLst").html(response);
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX call error:', error);
+            }
+        });
+    }
+
+    let pageValue = Number(document.getElementById("pageNum").innerText);
+
+    function attachClickHandlers() {
+        $("#nextpage").click(function () {
+            navigationHandler(pageValue + 1);
+        });
+
+        $("#prevpage").click(function () {
+            navigationHandler(pageValue - 1);
+        });
+    }
+
+    attachClickHandlers();
+
+    function navigationHandler(currentPage) {
+        $.ajax({
+            url: "CustomerProducts/NavigatePages?pagenumber=" + String(currentPage),
+            method: "get",
+            success: function (response) {
+                $("#ProductLst").html(response);
+                // Update pageValue after loading the next page
+                pageValue = currentPage;
+                document.getElementById("pageNum").innerText = currentPage;
+                attachClickHandlers(); // Reattach click event handlers
+            },
+        });
+    }
+
+</script>

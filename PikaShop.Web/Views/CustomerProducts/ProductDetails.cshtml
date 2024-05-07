@@ -1,0 +1,133 @@
+﻿﻿
+@{
+    ViewData["Title"] = "ProductDetails";
+}
+
+
+<div class="container-fluid ">
+    <div class="row justify-content-around gap-2">
+        <div class="col-md-8">
+
+            <div class="row mt-2 justify-content-around gap-2">
+                <div class="align-self-start">
+                    <a class="btn btn-outline-secondary "
+                       style="background-image: linear-gradient(to bottom, #ffeecc, #ffcc66); bord
+er-color: #ffcc66;" href="/CustomerProducts/Index" class="btn btn-link">Back to Products</a>
+                </div>
+                <div class="col-md-6">
+                    @if (Model.Img != null)
+                    {
+                        <img src="@Model.Img" class="img-fluid w-100 h-100" alt="@Model.Name" />
+                    }
+                    else
+                    {
+                        <span>No image available</span>
+                    }
+                </div>
+                <div class="col-md-5">
+                    <h2>@Model.Name</h2>
+                    <h5 class="price">Price: <span>@Model.Price</span></h5>
+                    <p class="desc">Description: <span>@Model.Description</span></p>
+                    <p class="info">
+                        <span>Available :</span>
+                        @if (Model.UnitsInStock > 0)
+                        {
+                            <span>In stock</span>
+                        }
+                        else
+                        {
+                            <span>Out of stock</span>
+                        }
+                    </p>
+                    <p class="info">
+                        <span>SKU :</span> @Model.ID
+                    </p>
+                    @foreach (var Spec in Model.ProductSpecs)
+                    {
+                        <p class="info">
+                            <span>@Spec.Key :</span> @Spec.Value
+                        </p>
+                    }
+                    <hr />
+                    <div class="d-flex justify-content-between align-items-center">
+                        <button id="@Model.ID-removingBtn" data-input="@Model.ID" class="btn text-xxl fw-bold remove-btn" style="font-size:30px">-</button>
+                        <span id="@Model.ID" class="btn btn-light rounded-pill mx-2" style="font-size:30px"
+                              type="number">1</span>
+                        <buttonid id="@Model.ID-addingBtn" data-input="@Model.ID" class="btn text-xxl fw-bold add-btn" style="font-size:30px">+</button>
+                    </div>
+                    @if (User.IsInRole("Customer"))
+                    {
+                        <div class="d-flex align-items-center justify-content-between">
+                        <div class="text-center mt-3">
+                            <button type="button" data-input="@Model.ID" class="btn btn-warning btn-lg toCardBtn">
+                                Add to Cart
+                            </button>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button type="button" data-input="@Model.ID" class="btn btn-success btn-lg toWishListBtn">
+                                Add to WishList
+                            </button>
+                        </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '.remove-btn', function () {
+            const inputId = $(this).data('input');
+            const input = $('#' + inputId);
+            let currentValue = parseInt(input.text());
+            currentValue = Math.max(currentValue - 1, 1);
+            input.text(currentValue);
+        });
+
+        $(document).on('click', '.add-btn', function () {
+            const inputId = $(this).data('input');
+            const input = $('#' + inputId);
+            let currentValue = parseInt(input.text());
+            currentValue++;
+            input.text(currentValue);
+        });
+
+        $(document).on('click', '.toCardBtn', function () {
+            const inputId = $(this).data('input');
+            const input = $('#' + inputId);
+            const productQuantity = parseInt(input.text());
+            AddToCardHandler(inputId, productQuantity);
+            const newValue = 1;
+            input.text(newValue);
+        });
+
+        function AddToCardHandler(productId, productQuantity) {
+            $.ajax({
+                url: "/CartItem/AddToCart", // Corrected URL
+                method: "post",
+                data: { productId: productId, productQuantity: productQuantity }
+            });
+        }
+
+        $(document).on('click', '.toWishListBtn', function () {
+            const inputId = $(this).data('input');
+            const input = $('#' + inputId);
+            const productQuantity = parseInt(input.text());
+            AddToWishListHandler(inputId, productQuantity);
+            const newValue = 1;
+            input.text(newValue);
+        });
+
+        function AddToWishListHandler(productId, productQuantity) {
+            $.ajax({
+                url: "/WishList/AddToWishList", // Corrected URL
+                method: "post",
+                data: { productId: productId, productQuantity: productQuantity }
+            });
+        }
+    });
+</script>

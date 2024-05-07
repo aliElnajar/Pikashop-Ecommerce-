@@ -1,0 +1,99 @@
+﻿﻿﻿ @using PikaShop.Web.ViewModels
+@model IEnumerable<CartItemViewModel>
+
+@{
+    ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Shopping Cart</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Product Image</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><img src="@item.ProductImage" alt="@item.ProductName" class="img-thumbnail" style="max-height: 100px;" /></td>
+                        <td>@item.ProductName</td>
+                        <td>
+                            <div class="input-group mb-3 d-flex align-items-center quantity-container" style="max-width: 120px;">
+                                <div class="input-group-prepend">
+                                    <a href="#" class="btn btn-outline-black decrease" onclick="decrementProduct(@item.ProductId)">&minus;</a>
+                                </div>
+                                <input type="text" class="form-control text-center quantity-amount" value="@item.Quantity" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" data-product-id="@item.ProductId" oninput="changeTotal(this)">
+                                <div class="input-group-append">
+                                    <a href="#" class="btn btn-outline-black increase" onclick="incrementProduct(@item.ProductId)">&plus;</a>
+                                </div>
+                            </div>
+                        </td>
+                        <td>@item.Price.ToString("C")</td>
+                        <td>@item.TotalPrice.ToString("C")</td>
+                        <td>
+                            <form asp-action="Delete" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="hidden" name="customerId" value="@item.CustomerId" />
+                                <button type="submit" class="btn btn-success">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="/Home" class="btn btn-secondary mr-3">Continue Shopping</a>
+        <a href="/Checkout" class="btn btn-primary" style="background-color: green;">Proceed to Checkout</a>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function changeTotal(input) {
+            var quantityInput = input;
+            var quantity = parseInt(quantityInput.value);
+            var price = parseFloat(quantityInput.dataset.price);
+            var totalPrice = quantity * price;
+            document.getElementById("totalPrice").innerText = totalPrice.toFixed(2);
+        }
+
+        function incrementProduct(productId) {
+            $.ajax({
+                type: "POST",
+                url: "/CartItem/IncrementProduct",
+                data: { productId: productId },
+                success: function () {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("An error occurred while processing your request.");
+                }
+            });
+        }
+
+        function decrementProduct(productId) {
+            $.ajax({
+                type: "POST",
+                url: "/CartItem/DecrementProduct",
+                data: { productId: productId },
+                success: function () {
+                    window.location.reload();
+                },
+                error: function () {
+                    alert("An error occurred while processing your request.");
+                }
+            });
+        }
+    </script>
+}

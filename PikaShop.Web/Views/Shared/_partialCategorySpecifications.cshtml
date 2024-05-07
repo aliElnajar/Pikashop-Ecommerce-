@@ -1,0 +1,16 @@
+﻿<div class="category-features">
+    @foreach (var kvp in @Model)
+    {
+        <div class="form-group">
+            <label class="font-weight-bold">@kvp.Key</label>
+            <br />
+            @foreach (var value in kvp.Value)
+            {
+                <div class="form-check form-check-inline features">
+                    <input class="form-check-input" type="checkbox" id="@($"{kvp.Key}-{value}")" name="@kvp.Key" value="@value" />
+                    <label class="form-check-label" for="@($"{kvp.Key}-{value}")">@value</label>
+                </div>
+            }
+        </div>
+    }
+</div>

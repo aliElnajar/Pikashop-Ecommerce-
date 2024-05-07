@@ -1,0 +1,33 @@
+﻿@model List<PikaShop.Data.Context.ContextEntities.Core.DepartmentEntity>;
+
+<h3 class="mb-4">Departments</h3>
+<div class="accordion" id="departmentsAccordion">
+    @foreach (var dept in Model)
+    {
+        <article class="accordion-item">
+            <header class="accordion-header" id="deptHeading-@dept.ID">
+                <h3 class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@dept.ID">
+                    @dept.Name
+                </h3>
+            </header>
+            <div id="collapse-@dept.ID" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var category in dept.Categories)
+                        {
+                            <li class="list-group-item" aria-current="true">
+                                <a class="btn btn-outline-secondary" style="background-color:#f7ab0a color:white " asp-controller="CustomerProducts" asp-action="Index"
+                                   asp-route-catId="@category.ID">@category.Name</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </article>
+    }
+</div>
+
+
+
+   
+  

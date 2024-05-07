@@ -1,0 +1,48 @@
+﻿@model PikaShop.Admin.ViewModels.CategorySpecsViewModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h4 class="page-title"> Category Specifications</h4>
+<hr />
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Create new category</div>
+    </div>
+    <div class="card-body">
+
+        <form class="form-row" asp-action="Create" asp-controller="ProductSpecs">
+                <input type="hidden" asp-for="ID" />
+            <div class="form-group col-md-2">
+                <label asp-for="CategoryID" class="control-label"></label>
+                <select asp-for="CategoryID" asp-items="ViewBag.Categories" class="form-select">
+                    <option selected value="0">Select Category</option>
+                </select>
+                <span asp-validation-for="CategoryName" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="Key" class="control-label"></label>
+                <input asp-for="Key" class="form-control" />
+                <span asp-validation-for="Key" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="form-label" asp-for="Searchable" ></label>
+              <input asp-for="Searchable" class="form-check-input form-control" />
+            </div>
+            <div class="card-action">
+                <input type="submit" value="Create" class="btn btn-success" />
+                <a asp-action="Index" class="btn btn-default">Back to List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+

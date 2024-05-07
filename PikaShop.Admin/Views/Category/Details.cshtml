@@ -1,0 +1,64 @@
+﻿@model PikaShop.Admin.ViewModels.CategoryViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4 class="page-title"> Categories</h4>
+<hr />
+
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Category details</div>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <input type="hidden" asp-for="ID" />
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DepartmentName)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DepartmentName)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayName("Category Specifiction")
+            </dt>
+            @if (Model.CategorySpecs.Count==0)
+            {
+                <dd class="col-sm-10">
+                    @Html.DisplayName("No specifications added")
+                </dd>
+            }
+            else
+            {
+                @foreach (var spec in Model.CategorySpecs)
+                {
+                    <dd class="col-sm-10">
+                        @Html.DisplayName(spec.Key)
+                    </dd> 
+                    <dt class="col-sm-2">
+                        @Html.DisplayName("     ")
+                    </dt>
+                }
+            }
+        </dl>
+
+        <div class="card-action">
+            @Html.ActionLink("Edit", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
+            <a asp-action="Index" class="btn btn-default">Back to List</a>
+        </div>
+    </div>
+</div>

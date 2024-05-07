@@ -1,0 +1,203 @@
+﻿﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - PikaShop.Web</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/PikaShop.Web.styles.css" asp-append-version="true" />
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@300;400;500;600;700;800&family=Source+Code+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS for Navbar */
+        .navbar {
+            height: 10vh;
+            background-color: #416a59; /* Green Color */
+        }
+
+        img {
+            object-fit: cover;
+        }
+
+        .bi {
+            font-size: 2rem;
+        }
+
+        .nav-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align:  center;
+        }
+
+
+        .navbar-brand {
+            font-family: 'Anton', sans-serif;
+            font-size: 30px;
+            padding-left: 20px;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #eef3f8;
+            overflow-x: hidden;
+        }
+
+        .hero-content {
+            height: 100px;
+        }
+
+        .custome-background {
+            background-color: #416a59;
+            color: white;
+            padding: 5px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            background: #04AA6D;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+
+
+        <nav class="navbar navbar-expand-lg navbar-dark sticky-top px-3">
+            <a class="navbar-brand" href="#" style="color:#f7ab0a">PikaShop</a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end gap-3 p-4" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" style="color:#f7ab0a" href="/Home/Index">
+                            <i class="bi bi-house-door-fill" style="font-size:2rem"></i>
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    @if (User.IsInRole("Customer"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/CartItem/Index">
+                                <i class="bi bi-cart-fill"></i>
+                                <span>Cart</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/CustomerProducts/Index">
+                                <i class="bi bi-shop"></i>
+                                <span>Products</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Orders/Index">
+                                <i class="bi bi-bag"></i>
+                                <span>Orders</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/WishList/Index">
+                                <i class="bi bi-calendar-heart-fill"></i>
+                                <span>Wishlist</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout"
+                               asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                                <i class="bi bi-box-arrow-left"></i>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="/CustomerProducts/Index">
+                                <i class="bi bi-shop"></i>
+                                <span>Products</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Identity/Account/Login">
+                                <i class="bi bi-box-arrow-in-right"></i>
+                                <span>Login</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Identity/Account/Register">
+                                <i class="bi bi-person-fill-add"></i>
+                                <span>Register</span>
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+
+
+
+
+
+        <div class="dropdown dropdown-end d-md-none">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                <img src="path_to_hamburger_menu_image" alt="hamburger menu" class="h-8 w-8">
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li class="nav-item">
+                    <a class="nav-link" style="color:#f7ab0a" href="/Home/Index">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="/CartItem/Index">Cart</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/Account/Identity/Login">Login</a>
+                </li>
+            </div>
+        </div>
+
+
+
+    </header>
+
+
+    <div>
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2024 - PikaShop.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    @await Component.InvokeAsync("NToastNotify")
+</body>
+</html>

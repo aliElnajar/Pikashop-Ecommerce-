@@ -1,0 +1,36 @@
+﻿@model PikaShop.Admin.ViewModels.CategorySpecsViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h4 class="page-title"> Category Specifications</h4>
+<hr />
+
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">Category specification details</div>
+    </div>
+    <div class="card-body">
+            <dl class="row">
+                <input type="hidden" asp-for="ID" />
+                <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.Key)
+                </dt>
+                <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.Key)
+                </dd>
+                <dt class = "col-sm-2">
+                        @Html.DisplayNameFor(model => model.CategoryName)
+                </dt>
+                <dd class = "col-sm-10">
+                        @Html.DisplayFor(model => model.CategoryName)
+                </dd>
+            </dl>
+
+            <div class="card-action">
+            @Html.ActionLink("Edit", "Edit", new { id = Model.ID }, new { @class = "btn btn-primary" })
+                <a asp-action="Index" class="btn btn-default">Back to List</a>
+            </div>
+    </div>
+</div>

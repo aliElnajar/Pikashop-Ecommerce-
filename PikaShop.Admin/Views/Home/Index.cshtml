@@ -1,0 +1,182 @@
+﻿@using PikaShop.Admin.ViewModels
+@model DashboardViewModel
+@{
+	ViewData["Title"] = "Home Page";
+}
+
+
+<div class="content mt-3">
+
+@* 	<div class="col-sm-12">
+		<div class="alert  alert-success alert-dismissible fade show" role="alert">
+			<span class="badge badge-pill badge-success">Success</span> You successfully read this important alert message.
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	</div> *@
+
+
+	<div class="col-xl-3 col-lg-6">
+		<div class="card">
+			<div class="card-body">
+				<div class="stat-widget-one">
+					<div class="stat-icon dib"><i class="ti-layout-grid2 text-warning border-warning"></i></div>
+					<div class="stat-content dib">
+						<div class="stat-text">Total Orders</div>
+						<div class="stat-digit">@Model.OrdersCount</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xl-3 col-lg-6">
+		<div class="card">
+			<div class="card-body">
+				<div class="stat-widget-one">
+					<div class="stat-icon dib"><i class="ti-money text-success border-success"></i></div>
+					<div class="stat-content dib">
+						<div class="stat-text">Total Sales</div>
+						<div class="stat-digit">@Model.TotalSales</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-xl-3 col-lg-6">
+		<div class="card">
+			<div class="card-body">
+				<div class="stat-widget-one">
+					<div class="stat-icon dib"><i class="ti-user text-primary border-primary"></i></div>
+					<div class="stat-content dib">
+						<div class="stat-text">Total Customers</div>
+						<div class="stat-digit">@Model.CustomersCount</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-xl-3 col-lg-6">
+		<div class="card">
+			<div class="card-body">
+				<div class="stat-widget-one">
+					<div class="stat-icon dib"><i class="ti-layout-grid2 text-warning border-warning"></i></div>
+					<div class="stat-content dib">
+						<div class="stat-text">Total Products</div>
+						<div class="stat-digit">@Model.ProductsCount</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="col-lg-12">
+						<div class="card">
+							<div class="card-header">
+								<strong class="card-title">Latest Orders</strong>
+							</div>
+							<div class="card-body">
+								<table class="table">
+									<thead class="thead-dark">
+										<tr>
+											<th scope="col">Total</th>
+													<th scope="col">Status</th>
+													<th scope="col">Payment Method</th>
+										</tr>
+									</thead>
+									<tbody>
+						@foreach (var x in Model.LatestOrders)
+						{
+										<tr scope="col">Ordered At
+													<td scope="col">Total</td>
+													<td scope="col">Status</td>
+													<td scope="col">Payment Method</td>
+										</tr>
+						}
+										
+									</tbody>
+								</table>
+
+							</div>
+						</div>
+					</div>
+
+
+
+
+ <div class="col-lg-12">
+						<div class="card">
+							<div class="card-header">
+								<strong class="card-title">Monthly Sales</strong>
+							</div>
+							<div class="card-body">
+								<table class="table">
+									<thead class="thead-dark">
+										<tr>
+											<th scope="col">Year</th>
+											<th scope="col">Month</th>
+											<th scope="col">Sales</th>
+										</tr>
+									</thead>
+									<tbody>
+						@foreach(var n in Model.MonthlySales)
+						{
+								<tr>
+												<td>@n.year</td>
+												<td>@n.Month</td>
+												<td>@n.Sales</td>
+								</tr>
+						}
+						
+									</tbody>
+								</table>
+
+							</div>
+						</div>
+					</div>
+
+
+ <div class="col-lg-12">
+						<div class="card">
+							<div class="card-header">
+								<strong class="card-title">Top Selling Products</strong>
+							</div>
+							<div class="card-body">
+								<table class="table">
+									<thead class="thead-dark">
+										<tr>
+											<th scope="col">Name</th>
+											<th scope="col">Price</th>
+											<th scope="col">Total Quantity Sold</th>
+											<th scope="col">Total Sales</th>
+										</tr>
+									</thead>
+									<tbody>
+						@foreach(var y in Model.TopSellingProducts)
+						{
+								<tr>
+												<td>@y.Product.Name</td>
+												<td>@y.Product.Price</td>
+												<td>@y.TotalQuantitySold</td>
+												<td>@y.TotalSales</td>
+											</tr>
+						}
+						
+									</tbody>
+								</table>
+
+							</div>
+						</div>
+					</div>
+
+
+</div><!-- .animated -->
+
+</div> <!-- .content -->
+<script src="/vendors/chart.js/dist/Chart.bundle.min.js"></script>
+<script src="/assets/js/init-scripts/chart-js/chartjs-init.js"></script>
